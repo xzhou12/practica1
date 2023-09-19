@@ -1,86 +1,46 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Scanner;
 
 public class jugar {
 
 	public static void Main() {
 
+		Scanner s = new Scanner(System.in);
+
+		int rondas = 0;
+		boolean derrota, victoria;
+		derrota = victoria = false;
+
 		// Array con las ciudades
-		String[][] ciudades = leerCiudades();
+		String[][] ciudades = IA.leerCiudades();
+
+		int[] numBrotes = { 0 };
 
 		// Array con las ciudades y su nivel de brote
-		ArrayList<ArrayList> nivelBrote = inicializarNivelBrote(ciudades);
+		ArrayList<ArrayList> nivelBroteCiudades = brotes.inicializarNivelBrote(ciudades);
+		ArrayList<ArrayList> vacunasCura = vacunas.inicializarVacunas();
 
-		// Inicializa brotes
-//		IA.infectarCiudadesInicio(nivelBrote);
-		nivelBrote.get(0).set(1, "4");
+		conexionBD.guardarPartida(1, vacunasCura, nivelBroteCiudades, 4, 5);
 
-		IA.comprobarBroteNivel4(nivelBrote);
-		for (ArrayList aux : nivelBrote) {
-			System.out.println(aux);
+		while (derrota == false && victoria == false) {
+			// Turno jugador
+//			accion.Main(nivelBroteCiudades, vacunasCura);
+			// Turno IA
+
+			ArrayList<String> ciudadesAfectadas = IA.infectarCiudadesRondas(nivelBroteCiudades);
+//			System.out.println("CIUDADES AFECTADAS: " + ciudadesAfectadas);
+
+			// Comprobaciones
+			IA.comprobarBroteNivel4(nivelBroteCiudades, numBrotes);
+			victoria = IA.comprobarVictoria(nivelBroteCiudades);
+			derrota = IA.comprobarDerrota(nivelBroteCiudades, numBrotes);
+
+			derrota = true;
+
+			rondas++;
+
 		}
 
-	}
-
-	// Lee las ciudades que hay en el archivo de ciudades
-	public static String[][] leerCiudades() {
-		File fileCiudades = new File("ciudades.txt");
-		String s = "";
-		int tamano = contarLineas(fileCiudades);
-		String[][] ciudades = new String[tamano][];
-
-		// Recorre el archivo linea por linea hasta que sea null
-		try (BufferedReader br = new BufferedReader(new FileReader(fileCiudades))) {
-
-			for (int i = 0; s != null; i++) {
-				s = br.readLine();
-				if (s != null) { // Y si no es nula
-					// La separa y la guarda en la array[][]
-					ciudades[i] = s.split(";");
-				}
-			}
-
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-
-		return ciudades;
-
-	}
-
-	// Cuenta la linea de ciudades que hay en el archivo
-	public static int contarLineas(File fileCiudades) {
-		int contador = 0;
-
-		// Recorre el archivo linea por linea hasta que sea null
-		try (BufferedReader br = new BufferedReader(new FileReader(fileCiudades))) {
-			while (br.readLine() != null)
-				contador++;
-		} catch (Exception e) {
-		}
-
-		// Devuelve las lineas contadas
-		return contador;
-	}
-
-	// Inicializa el nivel de brote a 0
-	public static ArrayList<ArrayList> inicializarNivelBrote(String[][] ciudades) {
-
-		ArrayList<ArrayList> ciudadesBrotes = new ArrayList<ArrayList>();
-
-		// Bucle para copiar el nombre de las ciudades y inicializar el nivel
-		// de brote a 0
-		for (int i = 0; i < ciudades.length; i++) {
-			ArrayList<String> ciudad = new ArrayList<String>();
-			ciudad.add(ciudades[i][0]);
-			ciudad.add("0");
-			ciudadesBrotes.add(ciudad);
-		}
-
-		return ciudadesBrotes;
 	}
 
 }
