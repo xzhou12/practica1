@@ -1,5 +1,4 @@
 import java.io.File;
-import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,27 +12,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 public class parametros {
-static int valor;
-	public static void main(String[] args) {
-		// Archivo xml
-		File file = new File("parametros.xml");
-		// Modifica el archivo
-		modificarArchivo(file);
-		System.out.println("FIN");
 
-	}
-
-	// Printa los parametros
-	static void mostrarParametros(String[] parametros) {
-		System.out.println("------PARAMAETROS------");
-		System.out.println("1: Ciudades infectadas al inicio: " + parametros[0]);
-		System.out.println("2: Ciudades infectadas por ronda: " + parametros[1]);
-		System.out.println("3: Enfermedades activas para derrota: " + parametros[2]);
-		System.out.println("4: Brotes para derrota: " + parametros[3]);
-	}
+	public static final File archivo = new File("parametros.xml");
 
 	// Lee el archivo .xml
-	static String[] leerArchivo(File archivo) {
+	static String[] leerArchivo() {
 
 		// Variables
 		String numCiudadesInfectadasInicio = "";
@@ -71,41 +54,8 @@ static int valor;
 
 	}
 
-	// Modifica el archivo xml al gusto
-	static void modificarArchivo(File file) {
-
-		// Scanner y variables
-		Scanner s = new Scanner(System.in);
-		String[] parametros;
-		int num = 0;
-
-		// Mientras el numero no sea 5
-		while (num != 5) {
-			// Lee el archivo y lo guarda en una array
-			parametros = leerArchivo(file);
-			// Muestra los parametros
-			mostrarParametros(parametros);
-			System.out.println("5: Salir");
-			System.out.println("Cual desea modificar? (1-4)");
-			// Pide un numero
-			num = s.nextInt();
-			if (num >= 1 && num <= 4) {
-				// Si el valor esta entre 1 y 4, acutaliza el valor
-				//ahora pide el nuevo valor del parametro
-				valor = s.nextInt();
-				actualizarValor(file, num, valor);
-			} else if (num == 5) {
-				// Si es 5, sale
-				continue;
-			} else { // Si es otro, continua
-				System.out.println("ERROR! El numero del parametro no existe");
-			}
-
-		}
-	}
-
 	// Actualiza los valores(nombre de archivo, numero de parametro, valor nuevo)
-	static void actualizarValor(File file, int num, int valor) {
+	static void actualizarValor(File file, int valor1, int valor2, int valor3, int valor4) {
 
 		try {
 			// Cargamos el documento
@@ -113,27 +63,17 @@ static int valor;
 			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 			Document document = documentBuilder.parse(file);
 
-			if (num == 1) {
-				// Cargamos el dato y lo guardamos en el Nodo
-				Node node = document.getElementsByTagName("numCiudadesInfectadasInicio").item(0);
-				// Lo cambiamos por el valor nuevo
-				node.setTextContent(Integer.toString(valor));
+			// Cargamos el dato y lo guardamos en el Nodo
+			Node node = document.getElementsByTagName("numCiudadesInfectadasInicio").item(0);
+			// Lo cambiamos por el valor nuevo
+			node.setTextContent(Integer.toString(valor1));
+			node = document.getElementsByTagName("numCuidadesInfectadasRonda").item(0);
+			node.setTextContent(Integer.toString(valor2));
+			node = document.getElementsByTagName("numEnfermedadesActivasDerrota").item(0);
+			node.setTextContent(Integer.toString(valor3));
+			node = document.getElementsByTagName("numBrotesDerrota").item(0);
+			node.setTextContent(Integer.toString(valor4));
 
-			} else if (num == 2) {
-				Node node = document.getElementsByTagName("numCuidadesInfectadasRonda").item(0);
-				node.setTextContent(Integer.toString(valor));
-
-			} else if (num == 3) {
-				Node node = document.getElementsByTagName("numEnfermedadesActivasDerrota").item(0);
-				node.setTextContent(Integer.toString(valor));
-
-			} else if (num == 4) {
-				Node node = document.getElementsByTagName("numBrotesDerrota").item(0);
-				node.setTextContent(Integer.toString(valor));
-
-			}
-
-			// Guardamos el archivo
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
