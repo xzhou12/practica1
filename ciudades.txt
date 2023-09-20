@@ -45,4 +45,4 @@ Osaka;1;1255,320;Tokio,Taipei;
 Taipei;1;1205,375;Osaka,Shanghai,Hong Kong,Manila;
 Ho Chi Minh;1;1148,429;Yakarta,Bangkok,Hong Kong,Manila;
 Manila;1;1200,420;San Francisco,Ho Chi Minh,Taipei,Hong Kong,Sidney;
-Sidney;1;1320,645;Los Angeles,Manila,Yakarta;
+Sidney AAAAA
